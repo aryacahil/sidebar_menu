@@ -297,24 +297,36 @@ def remove_menu_item(name: str):
 
 @frappe.whitelist()
 def hide_all_menu_items():
-    frappe.db.sql("""UPDATE `tabWorkspace` SET is_hidden = 1""")
-    frappe.clear_cache(doctype="Workspace")
+    frappe.db.sql("""UPDATE `tabSidebar Menu` SET is_hidden = 1""")
+    frappe.clear_cache(doctype="Sidebar Menu")
     return {"status": "all_hidden"}
 
 @frappe.whitelist()
 def remove_all_menu_items():
     menu_items = frappe.get_all(
-        "Workspace",
+        "Sidebar Menu",
         filters={
             "is_hidden": 0
         },
         pluck="name"
     )
-    
-    for name in menu_items:
-        frappe.delete_doc("Workspace", name, force=True)
 
-    return {"status": "visible_deleted", "count": len(menu_items)}
+    for name in menu_items:
+        frappe.delete_doc("Sidebar Menu", name, force=True)
+
+    categories = frappe.get_all(
+        "Sidebar Menu Category",
+        pluck="name"
+    )
+
+    for category in categories:
+        frappe.delete_doc("Sidebar Menu Category", category, force=True)
+
+    return {
+        "status": "visible_sidebar_and_categories_deleted",
+        "sidebar_menu_deleted": len(menu_items),
+        "categories_deleted": len(categories),
+    }
 
 @frappe.whitelist()
 def update_menu_category_bulk(items, category):

@@ -810,7 +810,7 @@ $('#save-menu').click(function () {
     let allMenuNames = [];
     $('.structure-item').each(function () {
         const type = $(this).data('type');
-        if (type === 'workspace') {
+        if (type === 'Sidebar Menu') {
             allMenuNames.push($(this).data('name'));
         }
     });
@@ -835,32 +835,17 @@ $('#save-menu').click(function () {
         });
     });
 
-    $('#delete-all-menu').click(function () {
-        frappe.confirm('Are you sure you want to delete all menu items?', () => {
-            let items = [];
-            $('#menu-structure .structure-item').each(function () {
-                const type = $(this).data('type');
-                if (type === 'workspace') {
-                    items.push($(this).data('name'));
-                }
-            });
-
-            if (items.length) {
-                frappe.call({
-                    method: 'sidebar_menu.sidebar_menu.page.sidebar_menu_builder.sidebar_menu_builder.remove_all_menu_items',
-                    args: {
-                        items: items
-                    },
-                    callback: function () {
-                        $('#menu-structure').empty();
-                        frappe.msgprint('All menu items have been deleted.');
-                    }
-                });
-            } else {
+$('#delete-all-menu').click(function () {
+    frappe.confirm('Are you sure you want to delete all visible menu items and categories?', () => {
+        frappe.call({
+            method: 'sidebar_menu.sidebar_menu.page.sidebar_menu_builder.sidebar_menu_builder.remove_all_menu_items',
+            callback: function (r) {
                 $('#menu-structure').empty();
+                frappe.msgprint(`Deleted ${r.message.sidebar_menu_deleted} menu items and ${r.message.categories_deleted} categories.`);
             }
         });
     });
+});
 
     loadSidebarMenuItems();
     loadWorkspaceItems();
