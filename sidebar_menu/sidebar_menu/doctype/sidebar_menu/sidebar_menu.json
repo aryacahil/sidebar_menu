@@ -1,0 +1,108 @@
+{
+  "doctype": "DocType",
+  "name": "Sidebar Menu",
+  "module": "Sidebar Menu",
+  "custom": 1,
+  "autoname": "field:label",
+  "name_field": "",
+  "sort_field": "sequence_id",
+  "sort_order": "asc",
+  "editable_grid": 1,
+  "field_order": [
+    "label",
+    "type",
+    "link_type",
+    "link_to",
+    "external_link",
+    "parent_menu",
+    "category",
+    "sequence_id",
+    "icon",
+    "is_hidden"
+  ],
+  "fields": [
+    {
+      "fieldname": "label",
+      "fieldtype": "Data",
+      "label": "Label",
+      "reqd": 1,
+      "unique": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "type",
+      "fieldtype": "Select",
+      "label": "Type",
+      "options": "\nLink\nCustom Link",
+      "default": "Link",
+      "reqd": 1
+    },
+    {
+      "fieldname": "link_type",
+      "fieldtype": "Select",
+      "label": "Link Type",
+      "options": "\nWorkspace\nDocType\nReport\nPage",
+      "depends_on": "eval:doc.type === 'Link'"
+    },
+    {
+      "fieldname": "link_to",
+      "fieldtype": "Dynamic Link",
+      "label": "Link To",
+      "options": "link_type",
+      "depends_on": "eval:doc.type === 'Link'"
+    },
+    {
+      "fieldname": "external_link",
+      "fieldtype": "Data",
+      "label": "External Link",
+      "depends_on": "eval:doc.type === 'Custom Link'"
+    },
+    {
+      "fieldname": "parent_menu",
+      "fieldtype": "Link",
+      "label": "Parent Menu",
+      "options": "Sidebar Menu"
+    },
+    {
+      "fieldname": "category",
+      "fieldtype": "Link",
+      "label": "Category",
+      "options": "Sidebar Menu Category"
+    },
+    {
+      "fieldname": "sequence_id",
+      "fieldtype": "Int",
+      "label": "Sequence ID"
+    },
+    {
+      "fieldname": "icon",
+      "fieldtype": "Icon",
+      "label": "Icon"
+    },
+    {
+      "fieldname": "is_hidden",
+      "fieldtype": "Check",
+      "label": "Is Hidden",
+      "default": 0
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    },
+    {
+      "role": "Desk User",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    }
+  ],
+  "row_format": "Dynamic",
+  "index_web_pages_for_search": 1,
+  "grid_page_length": 50
+}

@@ -23,10 +23,10 @@ app_license = "mit"
 
 # Includes in <head>
 # ------------------
-
+app_name = "sidebar_menu"
 # include js, css files in header of desk.html
 # app_include_css = "/assets/sidebar_menu/css/sidebar_menu.css"
-# app_include_js = "/assets/sidebar_menu/js/sidebar_menu.js"
+app_include_js = "/assets/sidebar_menu/js/custom_sidebar.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/sidebar_menu/css/sidebar_menu.css"
@@ -139,7 +139,7 @@ app_license = "mit"
 
 # doc_events = {
 # 	"*": {
-# 		"on_update": "method",
+
 # 		"on_cancel": "method",
 # 		"on_trash": "method"
 # 	}
