@@ -10,77 +10,53 @@ def get_sidebar_menu_items():
         "workspaces": frappe.get_all("Workspace", fields=["name", "title", "icon"])
     }
 
-def get_app_from_module(module_name):
-    module_def = frappe.db.get_value("Module Def", module_name, "app_name")
-    return module_def or None
-
-@frappe.whitelist() # MASIH BELUM JADI
-def create_workspace_from_label(label):
-    original_label = label
-
-    if frappe.db.exists("Workspace", {"label": label}):
+@frappe.whitelist()
+def create_sidebar_menu_from_label(label):
+    if frappe.db.exists("Sidebar Menu", {"label": label}):
         return {"exists": True, "label": label}
 
     items = get_sidebar_menu_items()
-    
+
     link_type = None
-    link_to_name = None
-    app_name = None
-    
-    dt_match = next((d for d in items["doctypes"] if d["name"] == original_label), None)
+    link_to = None
+    icon = None
+
+    dt_match = next((d for d in items.get("doctypes", []) if d.get("name") == label), None)
     if dt_match:
         link_type = "DocType"
-        link_to_name = dt_match["name"]
-        dt = frappe.get_doc("DocType", link_to_name)
-        module_name = dt.module or module_name
-        app_name = get_app_from_module(module_name)
+        link_to = dt_match["name"]
+        icon = "file"  
     else:
-        pg_match = next((p for p in items["pages"] if p["name"] == original_label), None)
+        pg_match = next((p for p in items.get("pages", []) if p.get("name") == label), None)
         if pg_match:
             link_type = "Page"
-            link_to_name = pg_match["name"]
-            pg = frappe.get_doc("Page", link_to_name)
-            module_name = pg.module or module_name
-            app_name = get_app_from_module(module_name)
+            link_to = pg_match["name"]
+            icon = "file"  
         else:
-            rp_match = next((r for r in items["reports"] if r["name"] == original_label), None)
+            rp_match = next((r for r in items.get("reports", []) if r.get("name") == label), None)
             if rp_match:
                 link_type = "Report"
-                link_to_name = rp_match["name"]
-                rp = frappe.get_doc("Report", link_to_name)
-                module_name = rp.module or module_name
-                app_name = get_app_from_module(module_name)
+                link_to = rp_match["name"]
+                icon = "file"  
             else:
-                frappe.throw(f"Label '{original_label}' Doctype, Page, atau Report not valid.")
+                ws_match = next((w for w in items.get("workspaces", []) if w.get("name") == label), None)
+                if ws_match:
+                    link_type = "Workspace"
+                    link_to = ws_match["name"]
+                    icon = ws_match.get("icon") or "star"
+                else:
+                    frappe.throw(f"Label '{label}' Not Found in DocType, Page, Report, or Workspace.")
 
-    workspace_label = f"{original_label} Workspace"
-    if frappe.db.exists("Workspace", {"label": workspace_label}):
-        return {"exists": True, "label": workspace_label}
+    new_menu = frappe.new_doc("Sidebar Menu")
+    new_menu.label = label
+    new_menu.type = "Link"
+    new_menu.link_type = link_type
+    new_menu.link_to = link_to
+    new_menu.icon = icon
 
-    default_content = [{"type": "header", "data": {"text": workspace_label}}]
+    new_menu.insert(ignore_permissions=True)
 
-    new_workspace = frappe.new_doc("Workspace")
-    new_workspace.label = workspace_label
-    new_workspace.title = original_label
-    new_workspace.module = module_name
-    new_workspace.public = 1
-    new_workspace.sequence_id = 0
-    new_workspace.content = frappe.as_json(default_content)
-    new_workspace.app = app_name or ""
-    new_workspace.type = "Link"
-    new_workspace.link_type = link_type
-    new_workspace.link_to = link_to_name
-
-    new_workspace.append("links", {
-        "label": original_label,
-        "type": "Link",
-        "link_type": link_type,
-        "link_to": link_to_name
-    })
-
-    new_workspace.insert(ignore_permissions=True)
-
-    return {"exists": False, "name": new_workspace.name, "label": workspace_label}
+    return {"exists": False, "name": new_menu.name, "label": label}
 
 @frappe.whitelist()
 def get_menu_structure_items():
@@ -96,6 +72,7 @@ def get_menu_structure_items():
 
     menu_categories = frappe.get_all(
         'Sidebar Menu Category',
+        filters={"is_hidden": 0},
         fields=['name', 'label', 'sequence_id'],
         order_by='sequence_id asc'
     )
@@ -113,17 +90,45 @@ def get_menu_structure_items():
 
     return menu_items
 
-@frappe.whitelist() # MASIH BELUM JADI
-def update_menu_item(name, title, icon, public, type=None, link_type=None, link_to=None, external_link=None):
-    public = frappe.parse_json(public)
-    doc = frappe.get_doc("Workspace", name)
+@frappe.whitelist()
+def create_menu_item(label, icon=None, type=None, link_type=None, link_to=None, external_link=None):
+    if not label:
+        frappe.throw("Label is required")
 
-    if not doc.get("public") and doc.get("for_user") != frappe.session.user and not frappe.has_role("Workspace Manager"):
-        frappe.throw(_("Need Workspace Manager role to edit private workspace of other users"), frappe.PermissionError)
+    new_doc = frappe.new_doc("Sidebar Menu")
+    new_doc.label = label
+    new_doc.icon = icon or ""
+    new_doc.type = type or ""
+    new_doc.link_type = link_type or ""
+    new_doc.link_to = link_to or ""
+    new_doc.external_link = external_link or ""
+    new_doc.public = 1
+    new_doc.insert(ignore_permissions=True)
+    return new_doc
 
-    child_docs = frappe.get_all("Workspace", filters={"parent_page": doc.label, "public": doc.public})
+@frappe.whitelist()
+def create_menu_category(label):
+    if not label:
+        frappe.throw("Label is required")
 
-    doc.title = title
+    new_doc = frappe.new_doc("Sidebar Menu Category")
+    new_doc.label = label
+    new_doc.public = 1
+    new_doc.insert(ignore_permissions=True)
+    return new_doc
+
+@frappe.whitelist()
+def update_menu_item(name, label, icon, type=None, link_type=None, link_to=None, external_link=None, parent_menu=None, category=None):
+    doc = frappe.get_doc("Sidebar Menu", name)
+
+    if label != doc.label:
+        if frappe.db.exists("Sidebar Menu", label):
+            frappe.throw(f'Label "{label}" Already used by other menus.')
+        else:
+            name = frappe.rename_doc("Sidebar Menu", doc.name, label)
+            doc = frappe.get_doc("Sidebar Menu", name)
+
+    doc.label = label
     doc.icon = icon
 
     if type is not None:
@@ -134,61 +139,99 @@ def update_menu_item(name, title, icon, public, type=None, link_type=None, link_
         doc.link_to = link_to
     if external_link is not None:
         doc.external_link = external_link
-
-    if doc.public != public:
-        doc.sequence_id = frappe.db.count("Workspace", {"public": public}, cache=True)
-        doc.public = public
-
-    doc.for_user = "" if public else doc.for_user or frappe.session.user
+    if parent_menu is not None:
+        doc.parent_menu = parent_menu
+    if category is not None:
+        doc.category = category
 
     doc.save(ignore_permissions=True)
 
-    for child in child_docs:
-        child_doc = frappe.get_doc("Workspace", child.name)
-        child_doc.parent_page = doc.label  
-        if child_doc.public != public:
-            child_doc.public = public
-        child_doc.for_user = "" if public else child_doc.for_user or frappe.session.user
-        child_doc.save(ignore_permissions=True)
-
-    frappe.clear_cache(doctype="Workspace")
-
     return {
         "status": "updated",
-        "name": name,
-        "label": doc.label,
-        "title": title,
-        "icon": icon,
-        "public": public,
-        "type": type,
-        "link_type": link_type,
-        "link_to": link_to,
-        "external_link": external_link,
-        "route": f"app/{doc.label}"
-    }
-
-@frappe.whitelist() # MASIH BELUM JADI
-def get_workspace_info(name):
-    doc = frappe.get_doc("Workspace", name)
-    return {
         "name": doc.name,
-        "title": doc.title,
+        "label": doc.label,
         "icon": doc.icon,
-        "public": doc.public,
         "type": doc.type,
         "link_type": doc.link_type,
         "link_to": doc.link_to,
         "external_link": doc.external_link,
+        "parent_menu": doc.parent_menu,
+        "category": doc.category
     }
-    
+
 @frappe.whitelist()
-def get_hidden_sidebar_menu_items():
-    hidden_items = frappe.get_all(
+def get_sidebar_menu_info(name):
+    doc = frappe.get_doc("Sidebar Menu", name)
+    return {
+        "name": doc.name,
+        "label": doc.label,
+        "icon": doc.icon,
+        "type": doc.type,
+        "link_type": doc.link_type,
+        "link_to": doc.link_to,
+        "external_link": doc.external_link,
+        "parent_menu": doc.parent_menu,
+        "category": doc.category,
+        "sequence_id": doc.sequence_id,
+        "is_hidden": doc.is_hidden,
+    }
+
+@frappe.whitelist()
+def update_sidebar_menu_category(name, new_name):
+    if name == new_name:
+        return {"status": "unchanged", "name": name}
+
+    if frappe.db.exists("Sidebar Menu Category", new_name):
+        frappe.throw(_("Category with label <strong>{0}</strong> already exists").format(new_name))
+
+    frappe.flags.ignore_permissions = True
+    try:
+        frappe.rename_doc("Sidebar Menu Category", name, new_name)
+    finally:
+        frappe.flags.ignore_permissions = False
+
+    frappe.db.set_value("Sidebar Menu", {"category": name}, "category", new_name, update_modified=False)
+
+    return {"status": "renamed", "old_name": name, "new_name": new_name}
+
+@frappe.whitelist()
+def hide_sidebar_menu_category(name):
+    frappe.db.set_value("Sidebar Menu Category", name, "is_hidden", 1)
+
+    frappe.db.set_value("Sidebar Menu", {"category": name}, "category", None, update_modified=False)
+
+    frappe.db.commit()
+    return {"status": "success"}
+
+@frappe.whitelist()
+def delete_sidebar_menu_category(name):
+    if not frappe.db.exists("Sidebar Menu Category", name):
+        frappe.throw(_("Category {0} not found").format(name))
+
+    frappe.db.set_value("Sidebar Menu", {"category": name}, "category", None, update_modified=False)
+
+    frappe.delete_doc("Sidebar Menu Category", name, ignore_permissions=True)
+
+    return {"status": "deleted", "category": name}
+
+@frappe.whitelist()
+def get_hidden_sidebar_menu_items_and_categories():
+    hidden_menus = frappe.get_all(
         "Sidebar Menu",
         filters={"is_hidden": 1},
         fields=["name", "label", "icon", "sequence_id", "type", "link_type", "link_to"]
     )
-    return hidden_items
+    
+    hidden_categories = frappe.get_all(
+        "Sidebar Menu Category",
+        filters={"is_hidden": 1},
+        fields=["name", "label", "sequence_id"]
+    )
+    
+    return {
+        "hidden_menus": hidden_menus,
+        "hidden_categories": hidden_categories
+    }
 
 @frappe.whitelist()
 def save_menu_structure(structure):
@@ -233,15 +276,16 @@ def unhide_sidebar_menu_items(item_names):
         frappe.throw(_("Invalid input format."))
 
     if not isinstance(item_names, list):
-        frappe.throw(_("Expected a list of menu item names."))
+        frappe.throw(_("Expected a list of item names."))
 
     for name in item_names:
         if frappe.db.exists("Sidebar Menu", name):
-            frappe.db.set_value("Sidebar Menu", name, "is_hidden", 0)
+            frappe.db.set_value("Sidebar Menu", name, "is_hidden", 0, update_modified=False)
+        elif frappe.db.exists("Sidebar Menu Category", name):
+            frappe.db.set_value("Sidebar Menu Category", name, "is_hidden", 0, update_modified=False)
 
     frappe.db.commit()
-    return {"status": "success", "message": _("Menu items restored to structure.")}
-
+    return {"status": "success", "message": _("Selected Menu have been restored.")}
 
 @frappe.whitelist()
 def hide_menu_item(name: str):
@@ -296,9 +340,11 @@ def remove_menu_item(name: str):
     }
 
 @frappe.whitelist()
-def hide_all_menu_items():
+def hide_all_menu_items_and_categories():
     frappe.db.sql("""UPDATE `tabSidebar Menu` SET is_hidden = 1""")
+    frappe.db.sql("""UPDATE `tabSidebar Menu Category` SET is_hidden = 1""")
     frappe.clear_cache(doctype="Sidebar Menu")
+    frappe.clear_cache(doctype="Sidebar Menu Category")
     return {"status": "all_hidden"}
 
 @frappe.whitelist()

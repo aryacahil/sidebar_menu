@@ -12,6 +12,7 @@ def get_sidebar_menu():
 
     categories = frappe.get_all(
         "Sidebar Menu Category",
+        filters={"is_hidden": 0},
         fields=["name", "label", "sequence_id"],
         order_by="sequence_id asc"
     )

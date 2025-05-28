@@ -7,8 +7,8 @@
   "engine": "InnoDB",
   "field_order": [
     "label",
-    "description",
-    "sequence_id"
+    "sequence_id",
+    "is_hidden"
   ],
   "fields": [
     {
@@ -20,14 +20,15 @@
       "unique": 1
     },
     {
-      "fieldname": "description",
-      "fieldtype": "Text",
-      "label": "Description"
-    },
-    {
       "fieldname": "sequence_id",
       "fieldtype": "Float",
       "label": "Sequence Id"
+    },
+    {
+      "fieldname": "is_hidden",
+      "fieldtype": "Check",
+      "label": "Is Hidden",
+      "default": 0
     }
   ],
   "grid_page_length": 50,

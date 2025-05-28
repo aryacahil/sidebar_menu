@@ -5,6 +5,7 @@
   "custom": 1,
   "autoname": "field:label",
   "name_field": "",
+  "allow_rename": 1,
   "sort_field": "sequence_id",
   "sort_order": "asc",
   "editable_grid": 1,
