@@ -17,8 +17,8 @@ A modern and flexible Sidebar Menu Builder for Frappe/ERPNext. This app lets you
 
 ## 🖥️ Preview
 
-![Screenshot 1](screenshots/screenshot-1.png)
-![Screenshot 2](screenshots/screenshot-2.png)
+![Screenshot 1](sidebar_menu_builder.png)
+![Screenshot 2](sidebar_menu_result.png)
 
 ---
 
