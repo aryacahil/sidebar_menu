@@ -29,7 +29,7 @@ A modern and flexible Sidebar Menu Builder for Frappe/ERPNext. This app lets you
 
 ```bash
 # Inside your bench directory:
-bench get-app sidebar_menu https://github.com/your-username/sidebar_menu
+bench get-app sidebar_menu https://github.com/aryacahil/sidebar_menu
 bench --site your-site install-app sidebar_menu
 bench build
 ```
@@ -57,14 +57,13 @@ Each item supports:
 - Drag hierarchy (parent, category)
 
 🎨 Tech Stack
-
 - Frappe Framework
 - jQuery & Bootstrap (Frappe native)
 - SortableJS
 
 📜 License
-MIT License. Feel free to modify and use this app in your Frappe projects.
+- MIT License. Feel free to modify and use this app in your Frappe projects.
 
 💡 Credits
-Created by [Aryacahil]
-Inspired by ERPNext’s legacy sidebar and modern UX needs.
+- Created by [Aryacahil]
+- Inspired by ERPNext’s legacy sidebar and modern UX needs.
