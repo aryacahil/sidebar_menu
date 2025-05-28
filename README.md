@@ -1,41 +1,89 @@
-### Sidebar Menu
+# 📚 Sidebar Menu for Frappe
 
-Manage Your Menu
+A modern and flexible Sidebar Menu Builder for Frappe/ERPNext. This app lets you create a **custom global sidebar menu** with drag-and-drop, category grouping, and visibility toggling — fully independent from Workspace.
 
-### Installation
+---
 
-You can install this app using the [bench](https://github.com/frappe/bench) CLI:
+## ✨ Features
+
+- 🔧 **Drag & Drop Menu Builder** (powered by SortableJS)
+- 🗂️ **Category Support**: Group menu items into collapsible sections
+- 🧩 **Support for Links**: Doctype, Page, Report, Workspace, or Custom Link
+- 👁️ **Hide/Show Menu Items** with a simple toggle
+- 💾 **Auto Save & Persistent Structure**
+- 🖼️ Fully integrated UI with the look and feel of Frappe
+
+---
+
+## 🖥️ Preview
+
+| Sidebar Menu Builder Page | Menu Structure with Categories |
+|---------------------------|-------------------------------|
+| ![Builder Screenshot](./screenshot-builder.png) | ![Menu Screenshot](./screenshot-structure.png) |
+
+> Replace `screenshot-builder.png` and `screenshot-structure.png` with your actual file names in the repo.
+
+---
+
+## 🚀 Installation
 
 ```bash
-cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
-bench install-app sidebar_menu
-```
+# Inside your bench directory:
+bench get-app sidebar_menu https://github.com/your-username/sidebar_menu
+bench --site your-site install-app sidebar_menu
+bench build
+🛠️ Usage
+Open Sidebar Menu Builder from the AwesomeBar or via /app/sidebar-menu-builder.
 
-### Contributing
+Drag & drop items from "Sidebar Menu Items" to "Menu Structure".
 
-This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
+Use the dropdown to edit, hide, or delete.
 
-```bash
-cd apps/sidebar_menu
-pre-commit install
-```
+Click Save Structure to persist the changes.
 
-Pre-commit is configured to use the following tools for checking and formatting your code:
+You can also create new Sidebar Menu Items and Categories directly from the builder.
 
-- ruff
-- eslint
-- prettier
-- pyupgrade
+🧩 Doctypes
+Sidebar Menu: Represents each individual menu item.
 
-### CI
+Sidebar Menu Category: Represents menu sections/groups.
 
-This app can use GitHub Actions for CI. The following workflows are configured:
+Each item supports:
 
-- CI: Installs this app and runs unit tests on every push to `develop` branch.
-- Linters: Runs [Frappe Semgrep Rules](https://github.com/frappe/semgrep-rules) and [pip-audit](https://pypi.org/project/pip-audit/) on every pull request.
+type: Link or Custom Link
 
+link_type: Workspace, Doctype, Report, Page
 
-### License
+link_to: The target name of the linked object
 
-mit
+Visibility toggle
+
+Drag hierarchy (parent, category)
+
+🎨 Tech Stack
+Frappe Framework
+
+jQuery & Bootstrap (Frappe native)
+
+SortableJS
+
+📂 Folder Structure
+cpp
+Copy
+Edit
+sidebar_menu/
+├── sidebar_menu/
+│   ├── doctype/
+│   ├── page/
+│   │   └── sidebar_menu_builder/
+│   ├── public/
+│   │   └── js/
+│   └── sidebar_menu/
+├── README.md
+└── screenshot-builder.png
+📜 License
+MIT License. Feel free to modify and use this app in your Frappe projects.
+
+💡 Credits
+Created by [Your Name]
+Inspired by ERPNext’s legacy sidebar and modern UX needs.
