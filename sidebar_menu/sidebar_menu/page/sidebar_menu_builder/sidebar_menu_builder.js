@@ -24,11 +24,11 @@ frappe.pages['sidebar-menu-builder'].on_page_load = function (wrapper) {
     $(page.body).html(`
       <div class="page-container my-4">
         <div class="container-fluid">
-          <div class="row">
+          <div class="row align-items-stretch">
 
             <!-- Sidebar Menu Items Panel -->
-            <div class="col-md-4">
-              <div class="card p-3 mb-4 h-100" style="overflow-x: hidden;">
+            <div class="col-md-4 d-flex flex-column">
+              <div class="card p-3 mb-4 flex-fill" style="overflow-x: hidden;">
 
                 <!-- Header with dropdown -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -114,8 +114,8 @@ frappe.pages['sidebar-menu-builder'].on_page_load = function (wrapper) {
         </div>
 
         <!-- Menu Structure Panel -->
-        <div class="col-md-8">
-          <div class="card p-3 mb-4 h-100 d-flex flex-column">
+        <div class="col-md-8 d-flex flex-column">
+          <div class="card p-3 flex-fill d-flex flex-column">
 
             <!-- Header with dropdown -->
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -298,7 +298,7 @@ function loadMenuStructureItems() {
                         if (item.is_category) {
                             $element = $(`
                                 <div class="structure-item category-item bg-white" data-name="${item.name}" data-category="1"
-                                     style="font-weight: bold; border: 1px solid #ddd; padding: 15px; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                                    style="font-weight: bold; border: 1px solid #ddd; padding: 8px; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="d-flex align-items-center">
                                             <span class="collapse-toggle mr-2" style="cursor: pointer;"><i class="fa fa-chevron-down"></i></span>
@@ -315,13 +315,13 @@ function loadMenuStructureItems() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="sub-menu-container mt-2 ml-3" style="margin-left: 20px; border-left: 2px solid #ccc; padding-left: 15px; margin-top: 10px;"></div>
+                                    <div class="sub-menu-container mt-2 ml-3" style="margin-left: 16px; border-left: 2px solid #ccc; padding-left: 15px; margin-top: 10px;"></div>
                                 </div>
                             `);
                         } else {
                             $element = $(`
                                 <div class="structure-item workspace-item bg-white" data-name="${item.name}" data-type="Sidebar Menu" data-parent_menu="${item.parent_menu || ''}" data-category="${item.category || ''}"
-                                    style="border: 1px solid #ddd; padding: 15px; border-radius: 6px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: none; font-weight: normal;">
+                                    style="border: 1px solid #ddd; padding: 8px; border-radius: 6px; margin-bottom: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: none; font-weight: normal;">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="d-flex align-items-center">
                                             <span class="collapse-toggle mr-2" style="cursor: pointer;"><i class="fa fa-chevron-down"></i></span>
@@ -338,7 +338,7 @@ function loadMenuStructureItems() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="sub-menu-container" style="margin-left: 20px; border-left: 2px solid #ccc; padding-left: 15px; margin-top: 10px;"></div>
+                                    <div class="sub-menu-container" style="margin-left: 16px; border-left: 2px solid #ccc; padding-left: 10px; margin-top: 10px;"></div>
                                 </div>
                             `);
                         }

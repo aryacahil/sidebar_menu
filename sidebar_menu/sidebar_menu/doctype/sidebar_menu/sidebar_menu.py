@@ -6,4 +6,4 @@ from frappe.model.document import Document
 
 class SidebarMenu(Document):
     def after_save(self):
-        frappe.publish_realtime("sidebar_menu_updated")
+        frappe.publish_realtime("custom_sidebar_menu_updated")

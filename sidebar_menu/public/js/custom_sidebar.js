@@ -1,8 +1,12 @@
 function inject_custom_sidebar_menu() {
     const $sidebar = $(".desk-sidebar");
 
-    if (!$sidebar.length || $sidebar.data("custom-menu-injected")) return;
+    if (!$sidebar.length || $sidebar.data("custom-menu-injected")) {
+        console.log("Sidebar not ready or already injected.");
+        return;
+    }
 
+    console.log("inject_custom_sidebar_menu: start injecting");
     $sidebar.data("custom-menu-injected", true);
 
     frappe.call({
@@ -67,12 +71,21 @@ frappe.realtime.on("custom_sidebar_menu_updated", () => {
 });
 
 frappe.after_ajax(() => {
-    const interval = setInterval(() => {
-        if ($(".desk-sidebar").length) {
-            clearInterval(interval);
-            inject_custom_sidebar_menu();
-        }
-    }, 200);
+    setTimeout(() => {
+        const interval = setInterval(() => {
+            if ($(".desk-sidebar").length) {
+                clearInterval(interval);
+                console.log("frappe.after_ajax + timeout: injecting sidebar");
+                inject_custom_sidebar_menu();
+            }
+        }, 200);
+    }, 500); 
+});
+
+frappe.router.on('change', () => {
+    if (frappe.get_route()[0] === "desk") {
+        window.reload_custom_sidebar_menu();
+    }
 });
 
 function render_menu_item(item) {
