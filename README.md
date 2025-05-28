@@ -17,11 +17,8 @@ A modern and flexible Sidebar Menu Builder for Frappe/ERPNext. This app lets you
 
 ## 🖥️ Preview
 
-| Sidebar Menu Builder Page | Sidebar Menu Result |
-|---------------------------|-------------------------------|
-| ![Builder Screenshot](./screenshot-builder.png) | ![Menu Screenshot](./screenshot-structure.png) |
-
-> Replace `screenshot-builder.png` and `screenshot-structure.png` with your actual file names in the repo.
+![Screenshot 1](screenshots/screenshot-1.png)
+![Screenshot 2](screenshots/screenshot-2.png)
 
 ---
 
@@ -34,36 +31,52 @@ bench --site your-site install-app sidebar_menu
 bench build
 ```
 
-🛠️ Usage
+## 🛠️ Usage
 
-1. Open Sidebar Menu Builder from the AwesomeBar or via /app/sidebar-menu-builder.
-2. Drag & drop items from "Sidebar Menu Items" to "Menu Structure".
-3. Use the dropdown to edit, hide, or delete.
-4. Click Save Structure to persist the changes.
+1. Open **Sidebar Menu Builder** from the **AwesomeBar** or go to:  
+   `/app/sidebar-menu-builder`
+2. Drag & drop items from the **Sidebar Menu Items** panel into **Menu Structure**.
+3. Use the three-dot dropdown on each item to **Edit**, **Hide**, or **Delete** it.
+4. Click **Save Structure** to persist your changes.
 
-> You can also create new Sidebar Menu Items and Categories directly from the builder.
+> You can also create new **Sidebar Menu Items** and **Categories** directly from the builder interface.
 
-🧩 Doctypes
+---
 
-- Sidebar Menu: Represents each individual menu item.
-- Sidebar Menu Category: Represents menu sections/groups.
+## 🧩 Doctypes
 
-Each item supports:
+- **Sidebar Menu**  
+  Represents each individual menu item.
 
-- type: Link or Custom Link
-- link_type: Workspace, Doctype, Report, Page
-- link_to: The target name of the linked object
-- Visibility toggle
-- Drag hierarchy (parent, category)
+- **Sidebar Menu Category**  
+  Represents menu sections/groups (categories).
 
-🎨 Tech Stack
-- Frappe Framework
-- jQuery & Bootstrap (Frappe native)
-- SortableJS
+### Supported Fields & Features
 
-📜 License
-- MIT License. Feel free to modify and use this app in your Frappe projects.
+- `type`: `Link` or `Custom Link`
+- `link_type`: `Workspace`, `Doctype`, `Report`, `Page`
+- `link_to`: The target name of the linked object
+- Visibility toggle (Show/Hide)
+- Drag-and-drop hierarchy (Parent/Category)
 
-💡 Credits
-- Created by [Aryacahil]
-- Inspired by ERPNext’s legacy sidebar and modern UX needs.
+---
+
+## 🎨 Tech Stack
+
+- [Frappe Framework](https://frappeframework.com/)
+- jQuery & Bootstrap (Frappe native UI)
+- [SortableJS](https://github.com/SortableJS/Sortable) for drag-and-drop interaction
+
+---
+
+## 📜 License
+
+**MIT License**  
+Feel free to modify, use, and distribute this app within your Frappe-based projects.
+
+---
+
+## 💡 Credits
+
+- Created by **[Aryacahil]**
+- Inspired by ERPNext's classic sidebar and modern UX needs.
