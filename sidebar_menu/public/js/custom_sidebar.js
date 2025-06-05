@@ -156,6 +156,9 @@ function render_menu_item(item) {
 
     if (href) {
         $content.find("a.item-anchor").off("click").on("click", function (e) {
+            if (href.startsWith("http://") || href.startsWith("https://")) {
+                return;
+            }
             e.preventDefault();
             e.stopPropagation();
             frappe.set_route(href.replace(/^\/app\//, ""));

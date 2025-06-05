@@ -22,8 +22,9 @@ def get_sidebar_menu():
 
     menu_map = {}
     for m in menus:
-        route = "#"
-        if m.type == "Link" and m.link_to:
+        if m.type == "Custom Link":
+            route = m.external_link or "#"
+        elif m.type == "Link" and m.link_to:
             slug = m.link_to.lower().replace(" ", "-")
             if m.link_type == "DocType":
                 route = f"/app/{slug}"
@@ -31,8 +32,10 @@ def get_sidebar_menu():
                 route = f"/app/query-report/{slug}"
             elif m.link_type in ["Page", "Workspace"]:
                 route = f"/app/{slug}"
-        elif m.type == "Custom Link":
-            route = m.external_link or "#"
+            else:
+                route = "#"
+        else:
+            route = "#"
 
         menu_map[m.name] = {
             "label": m.label,
